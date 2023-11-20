@@ -2,7 +2,6 @@ package com.ht.simplegateway
 
 import io.netty.handler.ssl.SslContextBuilder
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory
-import org.springframework.cloud.gateway.handler.AsyncPredicate.DefaultAsyncPredicate
 import org.springframework.cloud.gateway.route.RouteLocator
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
 import org.springframework.context.annotation.Bean
@@ -21,49 +20,7 @@ class MainRouter {
             .route { predicateSpec ->
                 var uriComponentsBuilder: UriComponentsBuilder? = UriComponentsBuilder.fromUriString("http://localhost")
                 predicateSpec
-                    .path("/x")
-                    .filters {gatewayFilterSpec ->
-                        gatewayFilterSpec.changeRequestUri {
-                            uriComponentsBuilder = UriComponentsBuilder
-                                .fromHttpRequest(it.request)
-                                .scheme("https")
-                            if (it.request.queryParams.containsKey("targetIp")) {
-                                uriComponentsBuilder!!
-                                    .host(it.request.queryParams.getFirst("targetIp"))
-                            }
-                            if (it.request.queryParams.containsKey("targetPort")) {
-                                uriComponentsBuilder!!
-                                    .port(it.request.queryParams.getFirst("targetPort"))
-                            }
-                            Optional.of(uriComponentsBuilder!!.build().toUri())
-                        }
-                    }.uri(uriComponentsBuilder?.toUriString())
-            }
-            .route { predicateSpec ->
-                var uriComponentsBuilder: UriComponentsBuilder? = UriComponentsBuilder.fromUriString("http://localhost")
-                predicateSpec
-                    .path("/y")
-                    .filters {gatewayFilterSpec ->
-                        gatewayFilterSpec.changeRequestUri {
-                            uriComponentsBuilder = UriComponentsBuilder
-                                .fromHttpRequest(it.request)
-                                .scheme("https")
-                            if (it.request.queryParams.containsKey("targetIp")) {
-                                uriComponentsBuilder!!
-                                    .host(it.request.queryParams.getFirst("targetIp"))
-                            }
-                            if (it.request.queryParams.containsKey("targetPort")) {
-                                uriComponentsBuilder!!
-                                    .port(it.request.queryParams.getFirst("targetPort"))
-                            }
-                            Optional.of(uriComponentsBuilder!!.build().toUri())
-                        }
-                    }.uri(uriComponentsBuilder?.toUriString())
-            }
-            .route {predicateSpec ->
-                var uriComponentsBuilder: UriComponentsBuilder? = UriComponentsBuilder.fromUriString("http://localhost")
-                predicateSpec
-                    .path("/temp")
+                    .path("/**")
                     .filters {gatewayFilterSpec ->
                         gatewayFilterSpec.changeRequestUri {
                             uriComponentsBuilder = UriComponentsBuilder
